@@ -6,7 +6,7 @@ class UserRepository extends Repository{
 
 	public function getUsers(): ?array
 	{
-		$query = $this->database->connnect()->prepare('
+		$query = $this->database->connect()->prepare('
 			SELECT * FROM users
 		');
 		$query->execute();
@@ -18,14 +18,14 @@ class UserRepository extends Repository{
 
 	public function getUserByEmail(string $email): ?array
 	{
-		$query = $this->database->connnect()->prepare('
+		$query = $this->database->connect()->prepare('
 			SELECT * FROM users WHERE email = :email
 		');
 		$query->bindParam(':email', $email, PDO::PARAM_STR);
 		$query->execute();
 
 		$users = $query->fetch(PDO::FETCH_ASSOC);
-		if ($user == false) {
+		if ($users == false) {
             return null;
         }
 		return $users;
@@ -34,8 +34,8 @@ class UserRepository extends Repository{
 	public function createUser(
 		string $email,
 		string $hashedPassword,
-		string $firstname,
-		string $lastname,
+		string $firstName,
+		string $lastName,
 		string $bio = ''
 	): void {
 		$query = $this->database->connect()->prepare('

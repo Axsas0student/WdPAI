@@ -20,7 +20,7 @@ class Routing{
 		],
 		"search-cards" => [
 			"controller" => "DashboardController",
-			"action" => "seatch"
+			"action" => "search"
 		]
 	];
 
