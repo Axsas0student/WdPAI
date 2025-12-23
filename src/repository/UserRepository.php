@@ -21,11 +21,13 @@ class UserRepository extends Repository{
 		$query = $this->database->connnect()->prepare('
 			SELECT * FROM users WHERE email = :email
 		');
-		$query->bindParam(':email', $email);
+		$query->bindParam(':email', $email, PDO::PARAM_STR);
 		$query->execute();
 
 		$users = $query->fetch(PDO::FETCH_ASSOC);
-		//TODO close db connection
+		if ($user == false) {
+            return null;
+        }
 		return $users;
 	}
 
@@ -40,5 +42,7 @@ class UserRepository extends Repository{
 			INSERT INTO users (firstname, lastname, email, password, bio)
 			VALUES (?, ?, ?, ?, ?);
 		');
+
+		$query->execute([$firstName, $lastName, $email, $hashedPassword, $bio]);
 	}
 }

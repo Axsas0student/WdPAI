@@ -1,18 +1,18 @@
 <?php
 
-require_once 'AppController.php';
-require_once __DIR__.'/../repository/UserRepository.php';
-require_once __DIR__.'/../repository/CardsRepository.php';
+require_once __DIR__ . '/AppController.php';
+require_once __DIR__ . '/../repository/UserRepository.php';
+require_once __DIR__ . '/../repository/CardsRepository.php';
 
 class DashboardController extends AppController {
-
     private $cardsRepository;
-    public function __construct(){
-        $this->cardsReposiory = new cardsRepository();
+
+    public function __construct() {
+        $this->cardsRepository = new CardsRepository();
     }
 
-    public function index( ) {
-        // TODO wyswietli wszystkie projekty z bazy danych
+    public function index(?int $id = null) {
+
         $cards = [
             [
                 'id' => 1,
@@ -48,44 +48,52 @@ class DashboardController extends AppController {
                 'subtitle' => 'Lucky draw',
                 'imageUrlPath' => 'https://deckofcardsapi.com/static/img/0H.png',
                 'href' => '/cards/ten-of-hearts'
-            ] 
+            ]
         ];
 
-    
+        $selectedCard = null;
 
+        if ($id !== null) {
+            foreach ($cards as $card) {
+                if ($card['id'] === $id) {
+                    $selectedCard = $card;
+                    break;
+                }
+            }
 
-        $UserRepository = new UserRepository();
-        $users = $UserRepository->getUsers();
+            if (!$selectedCard) {
+                return $this->render("404"); // lub komunikat
+            }
 
-        var_dump($users);
+            return $this->render('single-card', ['card' => $selectedCard]);
+        }
 
+        // bez ID → normalne wyświetlanie całej listy
         return $this->render('dashboard', ['cards' => $cards]);
     }
 
-    public function search(){
-
+    public function search()
+    {
         $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-        header('Content-type: application/json');
-
-        if ($this->isPost) {
+        header('Content-Type: application/json');
+        
+        if (!$this->isPost()) {
             http_response_code(405);
-            echo json_encode(["status" => "405", "message" => "Method not allowed"]);
+            echo json_encode(["status" => "405", "message" => "Method not allowed!"]);
             return;
         }
 
-        if ($contentType === "application/json"){
+        if ($contentType !== "application/json") {
             http_response_code(415);
-            echo json_encode(["status" => "415", "message" => "Content type not allowed"]);
+            echo json_encode(["status" => "415", "message" => "Content type not allowed!"]);
             return;
         }
-
         
         $content = trim(file_get_contents("php://input"));
         $decoded = json_decode($content, true);
 
         http_response_code(200);
-
-        $cards = $this->cardsRepository->getCardsByTitle('heart');
+        $cards = $this->cardsRepository->getCardsByTitle($decoded["search"]);
         echo json_encode($cards);
     }
 }
