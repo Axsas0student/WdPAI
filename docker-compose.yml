@@ -19,10 +19,13 @@ services:
       context: .
       dockerfile: docker/db/Dockerfile
     ports:
-      - "5433:5432" #local:container
+      - "5433:5432" #local:container(docker)
     networks:
       - pg-network
+    volumes:
+      - ./docker/db:/docker-entrypoint-initdb.d
   
+
   php:
     build:
       context: .

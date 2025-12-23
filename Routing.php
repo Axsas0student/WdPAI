@@ -17,20 +17,22 @@ class Routing{
 		"dashboard" => [
 			"controller" => "DashboardController",
 			"action" => "index"
+		],
+		"search-cards" => [
+			"controller" => "DashboardController",
+			"action" => "seatch"
 		]
 	];
 
 	public static function run(string $path) {
 		switch($path){
 			case 'dashboard':
-				$controller = self::$routes[$path]['controller'];
-				$action = self::$routes[$path]['action'];
-				include 'public/views/dashboard.html';
-				break;
 			case 'login':
 			case 'register':
+			case 'search-cards':
 				$controller = Routing::$routes[$path]["controller"];
 				$action = Routing::$routes[$path]["action"];
+				$id=0;
 
 				$controllerObj = new $controller;
 				$controllerObj->$action();
