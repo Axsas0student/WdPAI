@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HistorIQ - Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fbf7e8;
+            margin: 0;
+        }
+
+        .wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e6e2d5;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+
+        .q {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .row {
+            margin: 6px 0;
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 10px;
+            background: #d7b12b;
+            cursor: pointer;
+        }
+
+        .muted {
+            opacity: .75;
+            font-size: 13px;
+        }
+
+        a {
+            color: #1b4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="muted">
+            <a href="/topics">- Wróć do Topics</a>
+            - <a href="/dashboard">Dashboard</a>
+        </div>
+
+        <h1>HistorIQ - Quiz</h1>
+
+        <?php if (!empty($error)): ?>
+        <div class="card"><?= htmlspecialchars($error) ?></div>
+        <?php elseif (empty($topic) || empty($questions)): ?>
+        <div class="card">Brak pytań dla tego tematu.</div>
+        <?php else: ?>
+        <h2 style="margin-top:10px;"><?= htmlspecialchars($topic['name']) ?></h2>
+
+        <form method="POST" action="/quiz">
+            <input type="hidden" name="topic_id" value="<?= (int)$topic['id'] ?>" />
+
+            <?php foreach ($questions as $idx => $q): ?>
+            <div class="card">
+                <div class="muted">Question <?= $idx + 1 ?> / <?= count($questions) ?></div>
+                <div class="q"><?= htmlspecialchars($q['content']) ?></div>
+
+                <?php
+                $qid = (int)$q['id'];
+                $answers = $answersByQuestion[$qid] ?? [];
+                ?>
+
+                <?php if (empty($answers)): ?>
+                <div class="muted">Brak odpowiedzi w bazie.</div>
+                <?php else: ?>
+                <?php foreach ($answers as $a): ?>
+                <div class="row">
+                    <label>
+                        <input type="radio" name="answers[<?= $qid ?>]" value="<?= (int)$a['id'] ?>" />
+                        <?= htmlspecialchars($a['content']) ?>
+                    </label>
+                </div>
+                <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
+
+            <button class="btn" type="submit">Finish Quiz</button>
+        </form>
+        <?php endif; ?>
+    </div>
+</body>
+</html>

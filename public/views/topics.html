@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HistorIQ - Topics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fbf7e8;
+            margin: 0;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        h1 {
+            margin: 0 0 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .tile {
+            background: #fff;
+            border: 1px solid #e6e2d5;
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .name {
+            font-weight: 700;
+        }
+
+        .meta {
+            font-size: 12px;
+            opacity: .75;
+            margin-top: 8px;
+        }
+
+        .bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 99px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+            .bar > div {
+                height: 100%;
+                background: #d7b12b;
+                width: 0%;
+            }
+
+        .locked {
+            opacity: .55;
+        }
+
+        a {
+            color: #1b4;
+            text-decoration: none;
+        }
+
+        .topnav {
+            margin: 10px 0 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Choose a Topic</h1>
+
+        <div class="topnav">
+            <a href="/dashboard">- Dashboard</a>
+        </div>
+
+        <div class="grid">
+            <?php if (empty($topics)): ?>
+            <div class="tile">Brak tematów w bazie (topics).</div>
+            <?php else: ?>
+            <?php foreach ($topics as $t): ?>
+            <div class="tile <?= $t['is_locked'] ? 'locked' : '' ?>">
+                <div class="row">
+                    <div class="name"><?= htmlspecialchars($t['name']) ?></div>
+                    <div class="meta"><?= $t['is_locked'] ? 'LOCKED' : 'OPEN' ?></div>
+                </div>
+
+                <div class="meta">Progress: <?= (int)$t['progress'] ?>%</div>
+                <div class="bar">
+                    <div style="width: <?= (int)$t['progress'] ?>%;"></div>
+                </div>
+
+                <div class="meta" style="margin-top:10px;">
+                    <?php if (!$t['is_locked']): ?>
+                    <a href="/quiz?topic=<?= (int)$t['id'] ?>">Start</a>
+                    <?php else: ?>
+                    Zablokowany
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</body>
+</html>

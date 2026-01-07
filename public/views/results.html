@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HistorIQ - Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fbf7e8;
+            margin: 0;
+        }
+
+        .wrap {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e6e2d5;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 18px 0;
+        }
+
+        .big {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .muted {
+            opacity: .75;
+        }
+
+        a {
+            color: #1b4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Quiz Complete!</h1>
+
+        <?php if (empty($result)): ?>
+        <div class="card">Brak wyniku - zrób quiz z Topics.</div>
+        <?php else: ?>
+        <div class="card">
+            <div class="muted"><?= htmlspecialchars($result['topic']) ?></div>
+            <div class="big"><?= (int)$result['score'] ?>/<?= (int)$result['total'] ?></div>
+            <div class="muted">+<?= (int)$result['xp'] ?> XP</div>
+        </div>
+        <?php endif; ?>
+
+        <div class="card">
+            <a href="/topics">- Wróć do Topics</a><br />
+            <a href="/dashboard">- Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
