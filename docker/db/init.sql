@@ -76,3 +76,23 @@ INSERT INTO answers (question_id, content, is_correct) VALUES
 ((SELECT id FROM questions WHERE topic_id=1 AND content='In which year was Julius Caesar assassinated?' LIMIT 1), '14 AD', FALSE),
 ((SELECT id FROM questions WHERE topic_id=1 AND content='In which year was Julius Caesar assassinated?' LIMIT 1), '79 AD', FALSE)
 ON CONFLICT DO NOTHING;
+
+-- HistorIQ: zapis wyników
+CREATE TABLE IF NOT EXISTS quiz_attempts (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    topic_id INTEGER NOT NULL REFERENCES topics(id) ON DELETE CASCADE,
+    score INTEGER NOT NULL,
+    total INTEGER NOT NULL,
+    xp INTEGER NOT NULL DEFAULT 0,
+    finished_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- HistorIQ: progres per user per topic
+CREATE TABLE IF NOT EXISTS user_topic_progress (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    topic_id INTEGER NOT NULL REFERENCES topics(id) ON DELETE CASCADE,
+    progress INTEGER NOT NULL DEFAULT 0,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (user_id, topic_id)
+);

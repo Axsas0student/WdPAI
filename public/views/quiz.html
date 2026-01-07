@@ -51,13 +51,30 @@
             color: #1b4;
             text-decoration: none;
         }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .topbar-right {
+            display: flex;
+            gap: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="wrap">
-        <div class="muted">
-            <a href="/topics">- Wróć do Topics</a>
-            - <a href="/dashboard">Dashboard</a>
+        <div class="topbar muted">
+            <div>
+                <a href="/topics">- Wróć do Topics</a>
+            </div>
+            <div class="topbar-right">
+                <a href="/profile">Profile</a>
+                <a href="/logout">Logout</a>
+            </div>
         </div>
 
         <h1>HistorIQ - Quiz</h1>

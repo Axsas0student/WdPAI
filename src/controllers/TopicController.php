@@ -14,9 +14,13 @@ class TopicController extends AppController
 
     public function index()
     {
-        //$this->requireLogin(); // opcjonalnie: jeœli topics ma byæ tylko po zalogowaniu
+        $this->requireLogin();
 
-        $topics = $this->topicRepository->getAllTopics();
-        $this->render('topics', ['topics' => $topics]);
+        $userId = (int)($_SESSION['user_id'] ?? 0);
+        $topics = $this->topicRepository->getAllTopicsForUser($userId);
+
+        $this->render('topics', [
+            'topics' => $topics
+        ]);
     }
 }

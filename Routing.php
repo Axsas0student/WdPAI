@@ -4,6 +4,7 @@ require_once 'src/controllers/SecurityController.php';
 require_once 'src/controllers/DashboardController.php';
 require_once 'src/controllers/TopicController.php';
 require_once 'src/controllers/QuizController.php';
+require_once 'src/controllers/ProfileController.php';
 
 class Routing
 {
@@ -11,6 +12,10 @@ class Routing
         "login" => [
             "controller" => "SecurityController",
             "action" => "login"
+        ],
+        "logout" => [
+            "controller" => "SecurityController",
+            "action" => "logout"
         ],
         "register" => [
             "controller" => "SecurityController",
@@ -36,7 +41,12 @@ class Routing
         "results" => [
             "controller" => "QuizController",
             "action" => "results"
+        ],
+        "profile" => [
+            "controller" => "ProfileController",
+            "action" => "index"
         ]
+
     ];
 
     public static function run(string $path)

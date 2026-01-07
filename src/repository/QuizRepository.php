@@ -51,7 +51,6 @@ class QuizRepository
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // grupowanie: question_id -> [answers]
         $grouped = [];
         foreach ($rows as $r) {
             $qid = (int)$r['question_id'];
@@ -80,5 +79,55 @@ class QuizRepository
             $correct[(int)$r['question_id']] = (int)$r['id'];
         }
         return $correct;
+    }
+
+    public function saveAttempt(int $userId, int $topicId, int $score, int $total, int $xp): int
+    {
+        $stmt = $this->db->prepare('
+            INSERT INTO quiz_attempts (user_id, topic_id, score, total, xp)
+            VALUES (:uid, :tid, :score, :total, :xp)
+            RETURNING id
+        ');
+        $stmt->execute([
+            'uid' => $userId,
+            'tid' => $topicId,
+            'score' => $score,
+            'total' => $total,
+            'xp' => $xp
+        ]);
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function upsertUserTopicProgress(int $userId, int $topicId, int $progress): void
+    {
+        $stmt = $this->db->prepare('
+            INSERT INTO user_topic_progress (user_id, topic_id, progress)
+            VALUES (:uid, :tid, :prog)
+            ON CONFLICT (user_id, topic_id)
+            DO UPDATE SET
+                progress = GREATEST(user_topic_progress.progress, EXCLUDED.progress),
+                updated_at = NOW()
+        ');
+        $stmt->execute([
+            'uid' => $userId,
+            'tid' => $topicId,
+            'prog' => $progress
+        ]);
+    }
+
+    public function getAttemptForUser(int $attemptId, int $userId): ?array
+    {
+        $stmt = $this->db->prepare('
+            SELECT qa.id, qa.score, qa.total, qa.xp, qa.finished_at, t.name AS topic
+            FROM quiz_attempts qa
+            JOIN topics t ON t.id = qa.topic_id
+            WHERE qa.id = :aid AND qa.user_id = :uid
+            LIMIT 1
+        ');
+        $stmt->execute(['aid' => $attemptId, 'uid' => $userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row ?: null;
     }
 }

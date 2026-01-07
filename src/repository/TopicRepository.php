@@ -11,15 +11,50 @@ class TopicRepository
         $this->db = (new Database())->connect();
     }
 
-    public function getAllTopics(): array
+    public function getAllTopicsForUser(int $userId): array
     {
         $stmt = $this->db->prepare('
-            SELECT id, name, icon, is_locked, progress, sort_order
-            FROM topics
-            ORDER BY sort_order ASC, id ASC
-        ');
-        $stmt->execute();
+            SELECT
+                t.id,
+                t.name,
+                t.icon,
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                -- progres per user
+                COALESCE(utp.progress, 0) AS progress,
+
+                -- ile pytań ma temat
+                COUNT(q.id) AS questions_count,
+
+                -- BLOKADA: jeśli brak pytań -> locked
+                (COUNT(q.id) = 0) AS is_locked_effective,
+
+                t.sort_order
+            FROM topics t
+            LEFT JOIN user_topic_progress utp
+                ON utp.topic_id = t.id AND utp.user_id = :uid
+            LEFT JOIN questions q
+                ON q.topic_id = t.id
+            GROUP BY t.id, utp.progress
+            ORDER BY
+                -- unlocked (false) najpierw, locked (true) na końcu
+                (COUNT(q.id) = 0) ASC,
+                t.sort_order ASC,
+                t.id ASC
+        ');
+
+        $stmt->execute(['uid' => $userId]);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Zwracamy spójne klucze dla widoku: is_locked, questions_count jako int
+        foreach ($rows as &$r) {
+            $r['questions_count'] = (int)$r['questions_count'];
+            // Postgres zwraca boolean czasem jako 't'/'f' albo 1/0 - normalizujemy:
+            $locked = $r['is_locked_effective'];
+            $r['is_locked'] = ($locked === true || $locked === 1 || $locked === 't' || $locked === 'true');
+            unset($r['is_locked_effective']);
+        }
+
+        return $rows;
     }
 }

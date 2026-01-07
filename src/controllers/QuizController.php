@@ -14,8 +14,7 @@ class QuizController extends AppController
 
     public function start()
     {
-        // na razie mo¿esz zostawiæ bez logowania
-        // $this->requireLogin();
+        $this->requireLogin();
 
         if ($this->isGet()) {
             $topicId = isset($_GET['topic']) ? (int)$_GET['topic'] : 0;
@@ -42,13 +41,14 @@ class QuizController extends AppController
             return;
         }
 
-        // POST - liczenie wyniku
+        // POST
+        $userId = (int)($_SESSION['user_id'] ?? 0);
         $topicId = isset($_POST['topic_id']) ? (int)$_POST['topic_id'] : 0;
         $selected = isset($_POST['answers']) && is_array($_POST['answers']) ? $_POST['answers'] : [];
 
         $topic = $this->quizRepository->getTopic($topicId);
-        if (!$topic) {
-            $this->render('quiz', ['error' => 'Topic not found.']);
+        if (!$topic || $userId <= 0) {
+            $this->render('quiz', ['error' => 'Invalid request.']);
             return;
         }
 
@@ -65,33 +65,31 @@ class QuizController extends AppController
         }
 
         $total = count($questionIds);
-        $xp = $total > 0 ? $score * 5 : 0;
+        $xp = $score * 5;
 
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        // zapis próby
+        $attemptId = $this->quizRepository->saveAttempt($userId, $topicId, $score, $total, $xp);
 
-        $_SESSION['last_result'] = [
-            'topic' => $topic['name'],
-            'score' => $score,
-            'total' => $total,
-            'xp' => $xp
-        ];
+        // progres per topic (max z dotychczasowego)
+        $progress = $total > 0 ? (int)round(($score / $total) * 100) : 0;
+        $this->quizRepository->upsertUserTopicProgress($userId, $topicId, $progress);
 
-        header("Location: /results");
+        header("Location: /results?attempt=" . $attemptId);
         exit();
     }
 
     public function results()
     {
-        //$this->requireLogin();
+        $this->requireLogin();
 
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        $userId = (int)($_SESSION['user_id'] ?? 0);
+        $attemptId = isset($_GET['attempt']) ? (int)$_GET['attempt'] : 0;
+
+        $attempt = null;
+        if ($attemptId > 0) {
+            $attempt = $this->quizRepository->getAttemptForUser($attemptId, $userId);
         }
 
-        $result = $_SESSION['last_result'] ?? null;
-
-        $this->render('results', ['result' => $result]);
+        $this->render('results', ['result' => $attempt]);
     }
 }

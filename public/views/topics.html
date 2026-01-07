@@ -76,6 +76,9 @@
 
         .topnav {
             margin: 10px 0 18px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 14px;
         }
     </style>
 </head>
@@ -84,18 +87,26 @@
         <h1>Choose a Topic</h1>
 
         <div class="topnav">
-            <a href="/dashboard">- Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
         </div>
 
+        <!-- TOPICS -->
         <div class="grid">
             <?php if (empty($topics)): ?>
             <div class="tile">Brak tematów w bazie (topics).</div>
             <?php else: ?>
             <?php foreach ($topics as $t): ?>
-            <div class="tile <?= $t['is_locked'] ? 'locked' : '' ?>">
+            <div class="tile <?= !empty($t['is_locked']) ? 'locked' : '' ?>">
                 <div class="row">
                     <div class="name"><?= htmlspecialchars($t['name']) ?></div>
-                    <div class="meta"><?= $t['is_locked'] ? 'LOCKED' : 'OPEN' ?></div>
+                    <div class="meta">
+                        <?php if (!empty($t['is_locked'])): ?>
+                        LOCKED (no questions)
+                        <?php else: ?>
+                        OPEN
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div class="meta">Progress: <?= (int)$t['progress'] ?>%</div>
@@ -104,7 +115,7 @@
                 </div>
 
                 <div class="meta" style="margin-top:10px;">
-                    <?php if (!$t['is_locked']): ?>
+                    <?php if (empty($t['is_locked'])): ?>
                     <a href="/quiz?topic=<?= (int)$t['id'] ?>">Start</a>
                     <?php else: ?>
                     Zablokowany
