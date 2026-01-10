@@ -5,6 +5,7 @@ require_once 'src/controllers/DashboardController.php';
 require_once 'src/controllers/TopicController.php';
 require_once 'src/controllers/QuizController.php';
 require_once 'src/controllers/ProfileController.php';
+require_once 'src/controllers/AdminController.php';
 
 class Routing
 {
@@ -45,39 +46,31 @@ class Routing
         "profile" => [
             "controller" => "ProfileController",
             "action" => "index"
+        ],
+        "admin" => [
+            "controller" => "AdminController",
+            "action" => "index"
+        ],
+        "admin-topics" => [
+            "controller" => "AdminController",
+            "action" => "topics"
+        ],
+        "admin-questions" => [
+            "controller" => "AdminController",
+            "action" => "questions"
         ]
-
     ];
 
-    public static function run(string $path)
-    {
-        if ($path === '') {
-            $path = 'login';
-        }
-
-        // brak trasy -> 404
+    public static function run(string $path){
         if (!isset(self::$routes[$path])) {
             include 'public/views/404.html';
             return;
         }
 
-        $controller = self::$routes[$path]['controller'];
-        $action = self::$routes[$path]['action'];
-
-        // bezpieczeñstwo: kontroler nie istnieje
-        if (!class_exists($controller)) {
-            include 'public/views/404.html';
-            return;
-        }
+        $controller = self::$routes[$path]["controller"];
+        $action = self::$routes[$path]["action"];
 
         $controllerObj = new $controller();
-
-        // bezpieczeñstwo: akcja nie istnieje
-        if (!method_exists($controllerObj, $action)) {
-            include 'public/views/404.html';
-            return;
-        }
-
         $controllerObj->$action();
     }
 }

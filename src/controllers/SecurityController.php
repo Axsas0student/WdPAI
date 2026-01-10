@@ -45,6 +45,7 @@ class SecurityController extends AppController
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_firstname'] = $user['firstname'] ?? null;
         $_SESSION['is_logged_in'] = true;
+        $_SESSION['is_admin'] = (bool)($user['is_admin'] ?? false);
 
         header("Location: /topics");
         exit();

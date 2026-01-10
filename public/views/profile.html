@@ -68,8 +68,11 @@
             display: flex;
             justify-content: flex-end;
             gap: 14px;
+            font-size: 13px;
+            opacity: .8;
         }
     </style>
+    <link rel="stylesheet" href="/public/styles/buttons.css">
 </head>
 <body>
     <div class="wrap">
@@ -78,7 +81,10 @@
                 Witaj<?= !empty($firstName) ? ', ' . htmlspecialchars($firstName) : '' ?>!
             </h1>
 
-            <div class="topnav meta">
+            <div class="topnav">
+                <?php if (!empty($_SESSION['is_admin'])): ?>
+                <a href="/admin">Admin</a>
+                <?php endif; ?>
                 <a href="/logout">Logout</a>
             </div>
         </div>

@@ -45,4 +45,19 @@ class AppController {
         }
     }
 
+    protected function requireAdmin()
+{
+    $this->requireLogin();
+
+    if (empty($_SESSION['user_id'])) {
+        header("Location: /login");
+        exit();
+    }
+
+    if (empty($_SESSION['is_admin'])) {
+        include 'public/views/404.html';
+        exit();
+    }
+}
+
 }
