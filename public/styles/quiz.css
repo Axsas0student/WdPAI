@@ -1,0 +1,28 @@
+label.answer {
+    display: grid !important;
+    grid-template-columns: 18px 1fr;
+    align-items: center;
+    column-gap: 12px;
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+}
+
+    label.answer:hover {
+        background: color-mix(in srgb, var(--surface) 70%, var(--border));
+        border-color: var(--border);
+    }
+
+    label.answer input[type="radio"] {
+        margin: 0 !important;
+        justify-self: start;
+    }
+
+    label.answer span {
+        justify-self: start;
+        text-align: left !important;
+        white-space: normal !important;
+        line-height: 1.35;
+    }

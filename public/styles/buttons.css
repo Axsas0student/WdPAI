@@ -2,32 +2,39 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 18px;
+    gap: 8px;
+    padding: 10px 16px;
     border-radius: 12px;
-    border: 1px solid #e6e2d5;
-    background: #ffffff;
-    color: #2b2b2b;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
-    transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+    transition: background .15s ease, transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 
     .btn:hover {
-        background: #f4f1e6;
-        box-shadow: 0 4px 12px rgba(0,0,0,.06);
+        background: color-mix(in srgb, var(--surface) 70%, var(--border));
         transform: translateY(-1px);
+        box-shadow: var(--shadow);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: none;
     }
 
 .btn-primary {
-    background: #d7b12b;
-    border-color: #d7b12b;
+    background: var(--accent);
+    border-color: var(--accent);
     color: #000;
 }
 
     .btn-primary:hover {
-        background: #c9a623;
+        background: var(--accent-hover);
+        border-color: var(--accent-hover);
     }
 
 .btn-outline {
@@ -35,28 +42,44 @@
 }
 
 .btn-danger {
-    background: #f3d6d6;
-    border-color: #e6bcbc;
-    color: #7a1c1c;
+    background: var(--danger-bg);
+    border-color: var(--danger-border);
+    color: var(--danger-text);
 }
 
     .btn-danger:hover {
-        background: #eccaca;
+        background: var(--danger-hover);
     }
 
 .btn-sm {
-    padding: 8px 14px;
+    padding: 8px 12px;
     font-size: 13px;
+    border-radius: 10px;
 }
 
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+.btn-icon {
+    width: 42px;
+    padding: 9px 0;
 }
 
-.topbar-right {
-    display: flex;
-    gap: 10px;
+    .btn-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+        opacity: .9;
+    }
+
+@media (max-width: 560px) {
+    .btn {
+        padding: 9px 12px;
+        border-radius: 12px;
+    }
+
+    .btn-sm {
+        padding: 8px 10px;
+    }
+
+    .btn-icon {
+        width: 40px;
+    }
 }

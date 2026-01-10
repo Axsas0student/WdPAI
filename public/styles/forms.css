@@ -1,0 +1,47 @@
+.form-card {
+    max-width: 520px;
+    margin: 40px auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 6px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+input, select, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    outline: none;
+}
+
+    input:focus, select:focus, textarea:focus {
+        border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+
+.form-actions {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.alert {
+    background: color-mix(in srgb, var(--danger-bg) 60%, transparent);
+    border: 1px solid var(--danger-border);
+    color: var(--danger-text);
+    border-radius: 12px;
+    padding: 12px;
+    margin: 12px 0;
+}

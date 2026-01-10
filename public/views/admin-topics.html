@@ -4,81 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HistorIQ - Admin Topics</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #fbf7e8;
-            margin: 0;
-        }
 
-        .wrap {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        .card {
-            background: #fff;
-            border: 1px solid #e6e2d5;
-            border-radius: 12px;
-            padding: 16px;
-            margin: 12px 0;
-        }
-
-        .row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        input {
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-        }
-
-        button {
-            padding: 10px 14px;
-            border: 0;
-            border-radius: 10px;
-            background: #d7b12b;
-            cursor: pointer;
-        }
-
-        a {
-            color: #1b4;
-            text-decoration: none;
-        }
-
-        .muted {
-            opacity: .75;
-            font-size: 13px;
-        }
-    </style>
+    <link rel="stylesheet" href="/public/styles/theme.css">
+    <link rel="stylesheet" href="/public/styles/app.css">
     <link rel="stylesheet" href="/public/styles/buttons.css">
+    <link rel="stylesheet" href="/public/styles/forms.css">
+    <link rel="stylesheet" href="/public/styles/quiz.css">
+    <script defer src="/public/scripts/main.js"></script>
+
 </head>
 <body>
-    <div class="wrap">
-        <div class="muted" style="display:flex; justify-content:space-between; align-items:center;">
-            <a href="/admin">- Admin</a>
-            <div style="display:flex; gap:14px;">
-                <a href="/profile">Profile</a>
-                <a href="/logout">Logout</a>
+    <div class="wrap-narrow">
+        <div class="topbar">
+            <a class="btn btn-outline btn-sm" href="/admin">Wróć do Admin</a>
+
+            <div class="topbar-right">
+                <a class="btn btn-outline btn-icon" href="#" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.64 13a1 1 0 0 0-1.05-.14A8.05 8.05 0 0 1 17.22 13 8.15 8.15 0 0 1 9 4.78a8.59 8.59 0 0 1 .14-1.59 1 1 0 0 0-1.3-1.1A10 10 0 1 0 22 14.3a1 1 0 0 0-.36-1.3Z" /></svg>
+                </a>
+
+                <a class="btn btn-outline" href="/profile">Profile</a>
+                <a class="btn btn-danger" href="/logout">Logout</a>
             </div>
         </div>
 
         <h1>Dodaj temat</h1>
 
         <?php if (!empty($message)): ?>
-        <div class="card"><?= htmlspecialchars($message) ?></div>
+        <div class="alert"><?= htmlspecialchars($message) ?></div>
         <?php endif; ?>
 
         <div class="card">
             <form method="POST" action="/admin-topics">
-                <div class="row">
-                    <input name="name" placeholder="Nazwa tematu" style="flex:1; min-width:220px;" />
-                    <input name="sort_order" type="number" placeholder="Sort order" style="width:140px;" />
-                    <button type="submit">Dodaj</button>
+                <label>Nazwa tematu</label>
+                <input name="name" placeholder="Np. Ancient Greece" />
+
+                <label>Sort order</label>
+                <input name="sort_order" type="number" placeholder="Np. 10" />
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Dodaj</button>
                 </div>
             </form>
         </div>
@@ -90,7 +55,7 @@
             <?php else: ?>
             <ul>
                 <?php foreach ($topics as $t): ?>
-                <li><?= (int)$t['id'] ?> - <?= htmlspecialchars($t['name']) ?> (sort: <?= (int)$t['sort_order'] ?>)</li>
+                <li>#<?= (int)$t['id'] ?> - <?= htmlspecialchars($t['name']) ?> (sort: <?= (int)$t['sort_order'] ?>)</li>
                 <?php endforeach; ?>
             </ul>
             <?php endif; ?>

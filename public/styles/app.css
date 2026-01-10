@@ -1,0 +1,175 @@
+.wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.wrap-narrow {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.wrap-center {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 24px;
+    text-align: center;
+}
+
+h1 {
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    margin: 10px 0 10px;
+    letter-spacing: -0.01em;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: none;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.locked {
+    opacity: .55;
+}
+
+.bar {
+    height: 8px;
+    background: color-mix(in srgb, var(--border) 60%, transparent);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+    .bar > div {
+        height: 100%;
+        background: var(--accent);
+        width: 0%;
+    }
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.q {
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.q-row {
+    margin: 6px 0;
+}
+
+.big {
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.answer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.answer input[type="radio"] {
+    margin: 0;
+    flex: 0 0 auto;
+}
+
+.answer span {
+    display: block;
+    flex: 1 1 auto;
+    text-align: left;
+    white-space: normal;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.topbar {
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.topbar-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+@media (max-width: 560px) {
+    .wrap, .wrap-narrow, .wrap-center {
+        padding: 16px;
+    }
+
+    .topbar {
+        gap: 10px;
+    }
+
+    .topbar-right {
+        width: 100%;
+        justify-content: flex-start; 
+        gap: 8px;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card, .tile {
+        padding: 14px;
+    }
+}

@@ -4,77 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HistorIQ - Quiz</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #fbf7e8;
-            margin: 0;
-        }
 
-        .wrap {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        .card {
-            background: #fff;
-            border: 1px solid #e6e2d5;
-            border-radius: 12px;
-            padding: 16px;
-            margin: 12px 0;
-        }
-
-        .q {
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .row {
-            margin: 6px 0;
-        }
-
-        .btn {
-            padding: 10px 14px;
-            border: 0;
-            border-radius: 10px;
-            background: #d7b12b;
-            cursor: pointer;
-        }
-
-        .muted {
-            opacity: .75;
-            font-size: 13px;
-        }
-
-        a {
-            color: #1b4;
-            text-decoration: none;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .topbar-right {
-            display: flex;
-            gap: 14px;
-        }
-    </style>
+    <link rel="stylesheet" href="/public/styles/theme.css">
+    <link rel="stylesheet" href="/public/styles/app.css">
     <link rel="stylesheet" href="/public/styles/buttons.css">
+    <link rel="stylesheet" href="/public/styles/forms.css">
+    <link rel="stylesheet" href="/public/styles/quiz.css">
+    <script defer src="/public/scripts/main.js"></script>
 </head>
 <body>
-    <div class="wrap">
-        <div class="topbar muted">
-            <div>
-                <a href="/topics">- Wróć do Topics</a>
-            </div>
+    <div class="wrap-narrow">
+        <div class="topbar">
+            <a class="btn btn-outline btn-sm" href="/topics">Wróć do Topics</a>
+
             <div class="topbar-right">
-                <a href="/profile">Profile</a>
-                <a href="/logout">Logout</a>
+                <button class="btn btn-outline btn-icon" type="button" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M21.64 13a1 1 0 0 0-1.05-.14A8.05 8.05 0 0 1 17.22 13 8.15 8.15 0 0 1 9 4.78a8.59 8.59 0 0 1 .14-1.59 1 1 0 0 0-1.3-1.1A10 10 0 1 0 22 14.3a1 1 0 0 0-.36-1.3Z" />
+                    </svg>
+                </button>
+
+                <a class="btn btn-outline" href="/profile">Profile</a>
+                <a class="btn btn-danger" href="/logout">Logout</a>
             </div>
         </div>
 
@@ -85,7 +36,7 @@
         <?php elseif (empty($topic) || empty($questions)): ?>
         <div class="card">Brak pytań dla tego tematu.</div>
         <?php else: ?>
-        <h2 style="margin-top:10px;"><?= htmlspecialchars($topic['name']) ?></h2>
+        <h2><?= htmlspecialchars($topic['name']) ?></h2>
 
         <form method="POST" action="/quiz">
             <input type="hidden" name="topic_id" value="<?= (int)$topic['id'] ?>" />
@@ -104,18 +55,18 @@
                 <div class="muted">Brak odpowiedzi w bazie.</div>
                 <?php else: ?>
                 <?php foreach ($answers as $a): ?>
-                <div class="row">
-                    <label>
-                        <input type="radio" name="answers[<?= $qid ?>]" value="<?= (int)$a['id'] ?>" />
-                        <?= htmlspecialchars($a['content']) ?>
-                    </label>
-                </div>
+                <label class="answer">
+                    <input type="radio" name="answers[<?= $qid ?>]" value="<?= (int)$a['id'] ?>" />
+                    <span><?= htmlspecialchars($a['content']) ?></span>
+                </label>
                 <?php endforeach; ?>
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>
 
-            <button class="btn" type="submit">Finish Quiz</button>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Finish Quiz</button>
+            </div>
         </form>
         <?php endif; ?>
     </div>
