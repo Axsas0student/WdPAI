@@ -62,6 +62,14 @@ class Routing
     ];
 
     public static function run(string $path){
+
+        $path = parse_url($path, PHP_URL_PATH) ?? '';
+        $path = trim($path, "/");
+
+        if ($path === '') {
+            header("Location: /topics");
+            exit();
+        }
         if (!isset(self::$routes[$path])) {
             include 'public/views/404.html';
             return;

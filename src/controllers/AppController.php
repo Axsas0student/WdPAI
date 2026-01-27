@@ -45,19 +45,52 @@ class AppController {
         }
     }
 
-    protected function requireAdmin()
-{
-    $this->requireLogin();
+    protected function requireAdmin() {
+        $this->requireLogin();
 
-    if (empty($_SESSION['user_id'])) {
-        header("Location: /login");
-        exit();
+        if (empty($_SESSION['user_id'])) {
+            header("Location: /login");
+            exit();
+        }
+
+        if (empty($_SESSION['is_admin'])) {
+            http_response_code(403);
+            echo "403 Forbidden";
+            exit();
+        }
     }
 
-    if (empty($_SESSION['is_admin'])) {
-        include 'public/views/404.html';
-        exit();
-    }
-}
+    protected function ensureSession(): void {
+        if (session_status() === PHP_SESSION_NONE) {
+            // Cookie params (C3/D3/E3) - w DEV secure=false, w PROD ustaw true po HTTPS
+            $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
+                || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
 
+            session_set_cookie_params([
+                'httponly' => true,           // C3
+                'samesite' => 'Lax',          // E3 (Lax jest bezpieczne i nie psuje logowania)
+                'secure'   => $isHttps        // D3 (w³¹czone dopiero na https)
+            ]);
+
+            session_start();
+        }
+    }
+
+    protected function csrfToken(): string {
+        $this->ensureSession();
+        if (empty($_SESSION['csrf'])) {
+            $_SESSION['csrf'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf'];
+    }
+
+    protected function requireCsrf(): void {
+        $this->ensureSession();
+        $posted = $_POST['csrf'] ?? '';
+        $session = $_SESSION['csrf'] ?? '';
+        if (!$posted || !$session || !hash_equals($session, $posted)) {
+            http_response_code(400); // A5
+            die('Invalid request');  // nie zdradzamy szczegó³ów
+        }
+    }
 }

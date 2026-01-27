@@ -15,20 +15,41 @@ class AdminController extends AppController
     public function index()
     {
         $this->requireAdmin();
-        $this->render('admin');
+        $this->ensureSession();
+
+        $this->render('admin', [
+            'csrf' => $this->csrfToken()
+        ]);
     }
 
     public function topics()
     {
         $this->requireAdmin();
+        $this->ensureSession();
 
         if ($this->isPost()) {
+            $this->requireCsrf();
+
             $name = trim($_POST['name'] ?? '');
             $sortOrder = (int)($_POST['sort_order'] ?? 0);
 
+            $topics = $this->adminRepository->getAllTopics();
+
+            if (strlen($name) > 120) {
+                $this->render('admin-topics', [
+                    'topics' => $topics,
+                    'message' => 'Nazwa tematu jest za d³uga',
+                    'csrf' => $this->csrfToken()
+                ]);
+                return;
+            }
+
             if ($name === '') {
-                $topics = $this->adminRepository->getAllTopics();
-                $this->render('admin-topics', ['topics' => $topics, 'message' => 'Podaj nazwê tematu']);
+                $this->render('admin-topics', [
+                    'topics' => $topics,
+                    'message' => 'Podaj nazwê tematu',
+                    'csrf' => $this->csrfToken()
+                ]);
                 return;
             }
 
@@ -38,14 +59,20 @@ class AdminController extends AppController
         }
 
         $topics = $this->adminRepository->getAllTopics();
-        $this->render('admin-topics', ['topics' => $topics]);
+        $this->render('admin-topics', [
+            'topics' => $topics,
+            'csrf' => $this->csrfToken()
+        ]);
     }
 
     public function questions()
     {
         $this->requireAdmin();
+        $this->ensureSession();
 
         if ($this->isPost()) {
+            $this->requireCsrf();
+
             $topicId = (int)($_POST['topic_id'] ?? 0);
             $question = trim($_POST['question'] ?? '');
 
@@ -53,20 +80,37 @@ class AdminController extends AppController
             $a2 = trim($_POST['a2'] ?? '');
             $a3 = trim($_POST['a3'] ?? '');
             $a4 = trim($_POST['a4'] ?? '');
-            $correctRaw = $_POST['correct'] ?? null;
-            if ($correctRaw === null || $correctRaw === '') {
-                $correct = -1;
-            } else {
-                $correct = (int)$correctRaw;
-            }
 
+            $correctRaw = $_POST['correct'] ?? null;
+            $correct = ($correctRaw === null || $correctRaw === '') ? -1 : (int)$correctRaw;
 
             $topics = $this->adminRepository->getAllTopics();
 
-            if ($topicId <= 0 || $question === '' || $a1 === '' || $a2 === '' || $a3 === '' || $a4 === '' || $correct < 0 || $correct > 3) {
+            if (
+                strlen($question) > 500 ||
+                strlen($a1) > 200 ||
+                strlen($a2) > 200 ||
+                strlen($a3) > 200 ||
+                strlen($a4) > 200
+            ) {
                 $this->render('admin-questions', [
                     'topics' => $topics,
-                    'message' => 'Uzupe³nij wszystkie pola i wybierz poprawn¹ odpowiedŸ'
+                    'message' => 'Tekst jest za d³ugi (skróæ pytanie/odpowiedzi)',
+                    'csrf' => $this->csrfToken()
+                ]);
+                return;
+            }
+
+            if (
+                $topicId <= 0 ||
+                $question === '' ||
+                $a1 === '' || $a2 === '' || $a3 === '' || $a4 === '' ||
+                $correct < 0 || $correct > 3
+            ) {
+                $this->render('admin-questions', [
+                    'topics' => $topics,
+                    'message' => 'Uzupe³nij wszystkie pola i wybierz poprawn¹ odpowiedŸ',
+                    'csrf' => $this->csrfToken()
                 ]);
                 return;
             }
@@ -83,6 +127,9 @@ class AdminController extends AppController
         }
 
         $topics = $this->adminRepository->getAllTopics();
-        $this->render('admin-questions', ['topics' => $topics]);
+        $this->render('admin-questions', [
+            'topics' => $topics,
+            'csrf' => $this->csrfToken()
+        ]);
     }
 }

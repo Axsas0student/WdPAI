@@ -34,6 +34,8 @@
             <?php endif; ?>
 
             <form action="/register" method="POST">
+                <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf ?? '') ?>">
+
                 <label>Email</label>
                 <input name="email" type="email" placeholder="Twój email" required />
 

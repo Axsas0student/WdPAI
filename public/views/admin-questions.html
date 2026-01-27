@@ -35,6 +35,8 @@
 
         <div class="card">
             <form method="POST" action="/admin-questions">
+                <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf ?? '') ?>">
+
                 <label>Temat</label>
                 <select name="topic_id" required>
                     <option value="">- wybierz -</option>

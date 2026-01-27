@@ -36,6 +36,8 @@
 
         <div class="card">
             <form method="POST" action="/admin-topics">
+                <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf ?? '') ?>">
+
                 <label>Nazwa tematu</label>
                 <input name="name" placeholder="Np. Ancient Greece" />
 
