@@ -32,9 +32,12 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - .:/app
+      - ./docker/php/logs:/var/log
     networks:
       - pg-network
-  
+    environment:
+      - REQUIRE_HTTPS=0
+
   pgadmin-wdpai:
     image: dpage/pgadmin4:latest
     container_name: pg-admin2

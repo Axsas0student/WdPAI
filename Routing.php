@@ -11,58 +11,62 @@ class Routing
 {
     public static $routes = [
         "login" => [
-            "controller" => "SecurityController",
+            "controller" => "SecurityController", 
             "action" => "login"
         ],
         "logout" => [
-            "controller" => "SecurityController",
+            "controller" => "SecurityController", 
             "action" => "logout"
         ],
         "register" => [
-            "controller" => "SecurityController",
+            "controller" => "SecurityController", 
             "action" => "register"
         ],
         "dashboard" => [
-            "controller" => "DashboardController",
+            "controller" => "DashboardController", 
             "action" => "index"
         ],
         "search-cards" => [
-            "controller" => "DashboardController",
+            "controller" => "DashboardController", 
             "action" => "search"
         ],
 
         "topics" => [
-            "controller" => "TopicController",
+            "controller" => "TopicController", 
             "action" => "index"
         ],
         "quiz" => [
-            "controller" => "QuizController",
+            "controller" => "QuizController", 
             "action" => "start"
         ],
         "results" => [
-            "controller" => "QuizController",
+            "controller" => "QuizController", 
             "action" => "results"
         ],
         "profile" => [
-            "controller" => "ProfileController",
+            "controller" => "ProfileController", 
             "action" => "index"
         ],
         "admin" => [
-            "controller" => "AdminController",
+            "controller" => "AdminController", 
             "action" => "index"
         ],
         "admin-topics" => [
-            "controller" => "AdminController",
+            "controller" => "AdminController", 
             "action" => "topics"
         ],
+        "admin-topics-search" => [
+            "controller" => "AdminController", 
+            "action" => "topicsSearch"
+        ],
         "admin-questions" => [
-            "controller" => "AdminController",
+            "controller" => "AdminController", 
             "action" => "questions"
         ]
     ];
 
-    public static function run(string $path){
-
+    public static function run(string $path)
+    {
         $path = parse_url($path, PHP_URL_PATH) ?? '';
         $path = trim($path, "/");
 
@@ -70,7 +74,9 @@ class Routing
             header("Location: /topics");
             exit();
         }
+
         if (!isset(self::$routes[$path])) {
+            http_response_code(404);
             include 'public/views/404.html';
             return;
         }

@@ -65,6 +65,27 @@ class AdminController extends AppController
         ]);
     }
 
+    public function topicsSearch()
+    {
+        $this->requireAdmin();
+        $this->ensureSession();
+
+        $q = trim($_GET['q'] ?? '');
+
+        if (strlen($q) > 60) {
+            http_response_code(400);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['error' => 'Query too long']);
+            exit();
+        }
+
+        $topics = $this->adminRepository->searchTopics($q, 30);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($topics);
+        exit();
+    }
+
     public function questions()
     {
         $this->requireAdmin();

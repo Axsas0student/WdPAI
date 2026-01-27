@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="/public/styles/forms.css">
     <link rel="stylesheet" href="/public/styles/quiz.css">
     <script defer src="/public/scripts/main.js"></script>
-
 </head>
 <body>
     <div class="wrap-narrow">
@@ -51,11 +50,21 @@
         </div>
 
         <h2>Lista tematów</h2>
+
+        <div class="card">
+            <label>Szukaj (AJAX / fetch)</label>
+            <input type="text" placeholder="Wpisz fragment nazwy..." data-topic-search />
+
+            <div class="muted" style="margin-top:8px;">
+                Wyniki są pobierane przez fetch z: <code>/admin-topics-search?q=...</code>
+            </div>
+        </div>
+
         <div class="card">
             <?php if (empty($topics)): ?>
             Brak tematów.
             <?php else: ?>
-            <ul>
+            <ul id="topicList">
                 <?php foreach ($topics as $t): ?>
                 <li>#<?= (int)$t['id'] ?> - <?= htmlspecialchars($t['name']) ?> (sort: <?= (int)$t['sort_order'] ?>)</li>
                 <?php endforeach; ?>

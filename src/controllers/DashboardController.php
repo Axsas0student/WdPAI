@@ -62,13 +62,12 @@ class DashboardController extends AppController {
             }
 
             if (!$selectedCard) {
-                return $this->render("404"); // lub komunikat
+                return $this->render("404");
             }
 
             return $this->render('single-card', ['card' => $selectedCard]);
         }
 
-        // bez ID → normalne wyświetlanie całej listy
         return $this->render('dashboard', ['cards' => $cards]);
     }
 

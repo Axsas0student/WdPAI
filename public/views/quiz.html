@@ -39,6 +39,8 @@
         <h2><?= htmlspecialchars($topic['name']) ?></h2>
 
         <form method="POST" action="/quiz">
+            <input type="hidden" name="csrf" value="<?= htmlspecialchars($csrf ?? '') ?>">
+
             <input type="hidden" name="topic_id" value="<?= (int)$topic['id'] ?>" />
 
             <?php foreach ($questions as $idx => $q): ?>

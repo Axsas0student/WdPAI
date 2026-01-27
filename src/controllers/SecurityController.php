@@ -22,6 +22,7 @@ class SecurityController extends AppController
             ]);
         }
 
+        $this->requireHttpsIfEnabled();
         $this->ensureSession();
         $this->requireCsrf();
 
@@ -61,7 +62,7 @@ class SecurityController extends AppController
             error_log("Failed login for email={$email} from IP={$ip}");
 
             if ((int)$_SESSION['login_failures'] >= 5) {
-                $_SESSION['login_lock_until'] = time() + 10; // sekundy
+                $_SESSION['login_lock_until'] = time() + 10;
             }
 
             return $this->render("login", [
@@ -95,6 +96,7 @@ class SecurityController extends AppController
             ]);
         }
 
+        $this->requireHttpsIfEnabled();
         $this->ensureSession();
         $this->requireCsrf();
 

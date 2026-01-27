@@ -22,6 +22,27 @@ class AdminRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function searchTopics(string $q, int $limit = 20): array
+    {
+        $q = trim($q);
+        if ($q === '') {
+            return $this->getAllTopics();
+        }
+
+        $stmt = $this->db->prepare('
+            SELECT id, name, sort_order
+            FROM topics
+            WHERE name ILIKE :q
+            ORDER BY sort_order ASC, id ASC
+            LIMIT :lim
+        ');
+        $stmt->bindValue(':q', '%' . $q . '%', PDO::PARAM_STR);
+        $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function addTopic(string $name, int $sortOrder = 0): void
     {
         $stmt = $this->db->prepare('
@@ -38,8 +59,8 @@ class AdminRepository
     public function addQuestionWithAnswers(
         int $topicId,
         string $questionContent,
-        array $answers,          // 4 teksty
-        int $correctIndex        // 0..3
+        array $answers,
+        int $correctIndex
     ): void {
         $this->db->beginTransaction();
         try {
@@ -64,7 +85,6 @@ class AdminRepository
                 $a->bindValue(':is_correct', $isCorrect, PDO::PARAM_BOOL);
                 $a->execute();
             }
-
 
             $this->db->commit();
         } catch (Throwable $e) {

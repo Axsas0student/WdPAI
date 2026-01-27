@@ -35,3 +35,5 @@ RUN echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-memlimit.in
 COPY . /app
 
 VOLUME ["/app"]
+
+COPY docker/php/conf.d/app.ini /usr/local/etc/php/conf.d/app.ini

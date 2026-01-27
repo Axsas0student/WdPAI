@@ -18,10 +18,7 @@ class AppController {
         $output = "";
                  
         if(file_exists($templatePath)){
-            // ["message" => "B³êdne has³o!"]
             extract($variables);
-            // $message = "B³êdne has³o!"
-            //echo $message
             
             ob_start();
             include $templatePath;
@@ -48,28 +45,23 @@ class AppController {
     protected function requireAdmin() {
         $this->requireLogin();
 
-        if (empty($_SESSION['user_id'])) {
-            header("Location: /login");
-            exit();
-        }
-
         if (empty($_SESSION['is_admin'])) {
             http_response_code(403);
-            echo "403 Forbidden";
+            include 'public/views/403.html';
             exit();
         }
     }
 
+
     protected function ensureSession(): void {
         if (session_status() === PHP_SESSION_NONE) {
-            // Cookie params (C3/D3/E3) - w DEV secure=false, w PROD ustaw true po HTTPS
             $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') 
                 || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
 
             session_set_cookie_params([
-                'httponly' => true,           // C3
-                'samesite' => 'Lax',          // E3 (Lax jest bezpieczne i nie psuje logowania)
-                'secure'   => $isHttps        // D3 (w³¹czone dopiero na https)
+                'httponly' => true,
+                'samesite' => 'Lax',
+                'secure'   => $isHttps
             ]);
 
             session_start();
@@ -89,8 +81,23 @@ class AppController {
         $posted = $_POST['csrf'] ?? '';
         $session = $_SESSION['csrf'] ?? '';
         if (!$posted || !$session || !hash_equals($session, $posted)) {
-            http_response_code(400); // A5
-            die('Invalid request');  // nie zdradzamy szczegó³ów
+            http_response_code(400);
+            die('Invalid request');
+        }
+    }
+
+    protected function requireHttpsIfEnabled(): void
+    {
+        $enabled = getenv('REQUIRE_HTTPS') === '1';
+        if (!$enabled) return;
+
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
+
+        if (!$isHttps) {
+            http_response_code(403);
+            echo "HTTPS required";
+            exit();
         }
     }
 }

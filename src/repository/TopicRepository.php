@@ -46,10 +46,8 @@ class TopicRepository
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Zwracamy spójne klucze dla widoku: is_locked, questions_count jako int
         foreach ($rows as &$r) {
             $r['questions_count'] = (int)$r['questions_count'];
-            // Postgres zwraca boolean czasem jako 't'/'f' albo 1/0 - normalizujemy:
             $locked = $r['is_locked_effective'];
             $r['is_locked'] = ($locked === true || $locked === 1 || $locked === 't' || $locked === 'true');
             unset($r['is_locked_effective']);
