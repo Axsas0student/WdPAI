@@ -38,7 +38,7 @@
         };
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    function initTopicSearch() {
         const input = document.querySelector("[data-topic-search]");
         const list = document.getElementById("topicList");
         if (!input || !list) return;
@@ -73,5 +73,7 @@
         }, 200);
 
         input.addEventListener("input", load);
-    });
+    }
+
+    initTopicSearch();
 })();
